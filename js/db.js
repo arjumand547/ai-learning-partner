@@ -12,6 +12,10 @@ const DB = {
 
   set(key, value) {
     localStorage.setItem("ai_partner_" + key, JSON.stringify(value));
+    // Also sync to cloud if user is logged in with Google
+    if (typeof cloudSync === "function") {
+      cloudSync(key, value);
+    }
   },
 
   // ---------- Settings ----------
