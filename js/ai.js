@@ -37,7 +37,7 @@ async function askAI(userMessages) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-20b",
         messages: messages,
         temperature: 0.7,
         max_tokens: 2048
@@ -46,6 +46,9 @@ async function askAI(userMessages) {
 
     if (!res.ok) {
       const err = await res.text();
+      console.error("Groq error:", err);
+      if (res.status === 401) return "Invalid API key. Please go to Settings and paste a correct Groq key.";
+      if (res.status === 404) return "Model not available. Please refresh the page or contact support.";
       return `Error from AI: ${res.status}. Please check your API key.`;
     }
 
@@ -81,7 +84,7 @@ Still keep the same teaching style: logic first, examples, step-by-step, ready-t
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-20b",
         messages: messages,
         temperature: 0.5,
         max_tokens: 2048
