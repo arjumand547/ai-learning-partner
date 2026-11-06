@@ -213,6 +213,21 @@
   <div id="page-settings" class="page">
     <div class="section-title">⚙️ Settings</div>
 
+    <!-- Google Account -->
+    <div class="card">
+      <div class="card-title">🔐 Google Account</div>
+      <div class="card-sub" style="margin-bottom:12px;">
+        Sign in so your data (courses, attendance, notes, etc.) is saved in the cloud and works on any device.
+      </div>
+      <div id="user-info" style="display:none;margin-bottom:12px;"></div>
+      <button id="btn-google-login" class="btn btn-primary" onclick="signInWithGoogle()">
+        🔵 Sign in with Google
+      </button>
+      <button id="btn-logout" class="btn btn-outline" style="display:none;margin-top:8px;" onclick="signOutUser()">
+        Sign Out
+      </button>
+    </div>
+
     <div class="card">
       <div class="card-title">🔑 Free Groq API Key</div>
       <div class="card-sub" style="margin-bottom:10px;">
@@ -228,6 +243,19 @@
     </div>
 
     <div class="card">
+      <div class="card-title">🔥 Firebase Setup (for Google Login)</div>
+      <div class="card-sub" style="margin-bottom:10px;">
+        To enable Google Sign-In you need a free Firebase project.<br><br>
+        <strong>Steps:</strong><br>
+        1. Go to <a href="https://console.firebase.google.com" target="_blank" style="color:#a5b4fc;">console.firebase.google.com</a><br>
+        2. Create a new project (free)<br>
+        3. Enable <strong>Authentication → Google</strong><br>
+        4. Enable <strong>Firestore Database</strong><br>
+        5. Copy your Firebase config and paste it into <code>js/auth.js</code>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-title">📱 Install as App</div>
       <div class="card-sub">
         <strong>Phone:</strong> Open this site in Chrome → Menu → Add to Home Screen<br><br>
@@ -238,9 +266,9 @@
     <div class="card">
       <div class="card-title">ℹ️ About</div>
       <div class="card-sub">
-        AI Learning Partner v2<br>
+        AI Learning Partner v2.1<br>
         Built for BS AI students from Pakistan<br>
-        All data stays on your device
+        Data can sync via Google account
       </div>
     </div>
   </div>
@@ -277,8 +305,23 @@
   <div id="toast" class="toast"></div>
 
   <!-- Scripts -->
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
   <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/ai.js"></script>
   <script src="js/app.js"></script>
+
+  <script>
+    // Initialize Firebase after page load
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        if (typeof initFirebase === "function") initFirebase();
+      }, 300);
+    });
+  </script>
 </body>
 </html>
