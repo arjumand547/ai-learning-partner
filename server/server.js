@@ -25,7 +25,16 @@ function send(res, code, obj, extra = {}) {
   res.writeHead(code, { 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff', ...extra });
   res.end(JSON.stringify(obj));
 }
-function body(req) { return new Promise((ok, no) => { let s = ''; req.on('data', c => { s += c; if (s.length > 250000) { no(new Error('big')); req.destroy(); } }); req.on('end', () => ok(s)); req.on('error', no); }); }
+function body(req) {
+  if (req.body !== undefined) {
+    const value = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    return value.length > 250000 ? Promise.reject(new Error('big')) : Promise.resolve(value);
+  }
+  return new Promise((ok, no) => {
+    let s = ''; req.on('data', c => { s += c; if (s.length > 250000) { no(new Error('big')); req.destroy(); } });
+    req.on('end', () => ok(s)); req.on('error', no);
+  });
+}
 
 async function chat(req, res, cors) {
   if (!process.env.GROQ_API_KEY) return send(res, 503, { error: 'server_key_missing' }, cors);
@@ -71,5 +80,10 @@ const server = http.createServer(async (req, res) => {
     res.end(buf);
   });
 });
-module.exports = { server };
+module.exports = {
+  server,
+  chat,
+  send,
+  health: (req, res) => send(res, 200, { ok: true, ai: !!process.env.GROQ_API_KEY }),
+};
 if (require.main === module) server.listen(process.env.PORT || 3000, () => console.log('AI Learning Partner on port ' + (process.env.PORT || 3000)));

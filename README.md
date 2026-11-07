@@ -17,6 +17,7 @@ npm test                    # unit + server tests (no dependencies)
 ## Deployment
 **Option A (recommended): everything on one host** (Render/Railway): create a Node web service from this repo, start command `npm start`, set env var `GROQ_API_KEY`. Done. Use the HTTPS URL.
 **Option B: frontend on GitHub Pages**: deploy backend as above with `ALLOWED_ORIGIN=https://<you>.github.io`; edit `js/config.js` → `API_BASE: "https://<backend-url>"`; push the repo to Pages.
+**Option C: Vercel**: this repo includes Vercel function routes for `/api/chat` and `/api/health`, plus a static build. Import the repo into Vercel, keep the root directory as `.`, set `GROQ_API_KEY` in the project environment variables, and deploy. Vercel uses `npm run build:vercel` to publish only the frontend files; the API key remains server-side.
 
 ## Firebase setup (optional: Google sign-in + cloud sync)
 1. Firebase console → new project → Authentication → enable **Google**; add your site domain under Authorized domains.
