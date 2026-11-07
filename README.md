@@ -1,46 +1,95 @@
-# 🧠 AI Learning Partner v3
+# AI Learning Partner
 
-Installable PWA for BS AI students: AI Tutor, courses with a document-aware AI Gem, attendance (Asia/Karachi), scholarships, freelancing, dashboard with in-app notifications.
+An installable learning companion for BS Artificial Intelligence students. Organize courses, get AI-powered study support, track attendance, and keep scholarship and freelance opportunities in one place.
 
-## Architecture (read this first)
-- **Frontend**: static HTML/CSS/vanilla JS (no build step).
-- **Backend**: `server/server.js`, a zero-dependency Node ≥18 server that serves the frontend **and** proxies Groq. The Groq key lives only in the backend environment.
-- **GitHub Pages alone cannot run AI features** (no backend, no secrets). Host the backend on Render/Railway/Fly/a VPS; you may host the frontend on the same server (simplest) or on GitHub Pages with `API_BASE` pointing at the backend.
+**Live demo:** [your-artificial-mate.vercel.app](https://your-artificial-mate.vercel.app)
 
-## Local development
-```bash
-cp .env.example .env        # put your free key from console.groq.com in GROQ_API_KEY
-npm start                   # http://localhost:3000
-npm test                    # unit + server tests (no dependencies)
+## Features
+
+- **AI Tutor** — Ask questions, explore concepts with simple explanations, and generate study plans, quizzes, and flashcards.
+- **Course workspace** — Create and manage courses, track progress, and log study sessions.
+- **Course AI Gem** — Add PDF or text notes to a course and ask questions grounded in relevant excerpts. Generate summaries, quizzes, flashcards, and study plans from your materials.
+- **Attendance tracker** — Build a weekly timetable, mark lecture attendance, review unmarked lectures, and monitor progress toward an 80% target. Dates and lecture calculations use Asia/Karachi time.
+- **Scholarship tracker** — Organize opportunities by category and status, with links, deadlines, notes, and deadline reminders.
+- **Freelancing tracker and advice** — Track gigs and jobs, manage deadlines, and ask the AI for practical freelancing guidance.
+- **Dashboard and notifications** — Review learning activity, deadlines, attendance warnings, and unmarked lectures.
+- **Export and install** — Print or save AI answers as PDF, download Word-compatible documents, and install the app as a Progressive Web App (PWA).
+- **Responsive interface** — Dark visual theme, mobile navigation, and a reduced-motion setting.
+
+## Live demo and account status
+
+Google sign-in and cloud sync are **not enabled in the current demo**. They are planned for a future release. For now, app data is stored in the browser on the device you use.
+
+## Run locally
+
+### Requirements
+
+- Node.js 18 or later
+- A Groq API key for AI features ([get one from Groq](https://console.groq.com/))
+
+### Setup
+
+In PowerShell, from the project directory:
+
+```powershell
+Copy-Item .env.example .env
+notepad .env
+```
+
+Add your key to `.env`:
+
+```text
+GROQ_API_KEY=your_groq_api_key
+```
+
+Save the file, then start the app:
+
+```powershell
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000). Keep the API key in `.env`; do not put it in frontend files or commit it to GitHub. Without a configured key, the app can be explored but AI requests will not work.
+
+### Run tests
+
+```powershell
+npm test
 ```
 
 ## Deployment
-**Option A (recommended): everything on one host** (Render/Railway): create a Node web service from this repo, start command `npm start`, set env var `GROQ_API_KEY`. Done. Use the HTTPS URL.
-**Option B: frontend on GitHub Pages**: deploy backend as above with `ALLOWED_ORIGIN=https://<you>.github.io`; edit `js/config.js` → `API_BASE: "https://<backend-url>"`; push the repo to Pages.
-**Option C: Vercel**: this repo includes Vercel function routes for `/api/chat` and `/api/health`, plus a static build. Import the repo into Vercel, keep the root directory as `.`, set `GROQ_API_KEY` in the project environment variables, and deploy. Vercel uses `npm run build:vercel` to publish only the frontend files; the API key remains server-side.
 
-## Firebase setup (optional: Google sign-in + cloud sync)
-1. Firebase console → new project → Authentication → enable **Google**; add your site domain under Authorized domains.
-2. Create a **Firestore** database; paste `firestore.rules` into Rules and publish (each user can only read/write `users/<their uid>`).
-3. Project settings → Web app → copy config into `js/firebase-config.js` (`window.FIREBASE_CONFIG = {...}`).
-Courses, timetable, attendance, scholarships, freelance and semester start sync. Documents, chats and secrets do not. Conflict rule: whichever side changed more recently wins.
+This repository is configured for Vercel. Import the repository into Vercel, add `GROQ_API_KEY` as a project environment variable, and deploy. The `build:vercel` script prepares the static frontend, while the `/api` routes handle AI requests server-side.
 
-## Features
-- **Tutor**: server-side prompt, loading/typing indicator, duplicate-submit guard, persisted history, clear chat, code blocks, quick study-plan/quiz/flashcard starters.
-- **Answer exports**: open the print dialog to save the last answer as PDF, or download a formatted Word-compatible RTF document.
-- **Courses**: add/rename/delete, duplicate-name check, progress slider, study-session log.
-- **Course AI Gem**: upload multiple PDF/TXT per course (PDF.js text extraction), paste notes, chunk + BM25-style keyword retrieval, top excerpts sent to the AI; answers split into "From your notes" vs "Beyond your notes". Summary/quiz/flashcards/study-plan buttons.
-- **Attendance**: timetable with overlap check; lectures generated from real timetable days since semester start; mark only started lectures; present/absent/leave kept separate; leave excluded from the denominator; unmarked past lectures listed separately (never silently counted); needed/can-miss calculation at 80%.
-- **Scholarships / Freelancing**: full add/edit/delete, status dropdown, categories, validated links/dates, deadline badges.
-- **Notifications**: deadlines, attendance warnings, unmarked lectures (in-app only, no browser permissions).
-- **UI**: dark glass theme, 3D pointer-tilt cards, animated CSS 3D orb reacting to AI state, particle background, collapsible sidebar / mobile bottom nav, Reduce-motion setting (also honours the OS preference).
+The Node server can also serve the frontend and API together on another Node.js host. Configure `GROQ_API_KEY` in that host's environment and use `npm start` as the start command.
 
-## PWA
-Open the deployed HTTPS URL → browser menu → *Install app / Add to Home Screen*. Shell works offline; AI needs the backend; PDF reading needs internet the first time (PDF.js is loaded from cdnjs).
+## Technology
 
-## Troubleshooting
-- "server has no GROQ_API_KEY" → set it in `.env` / host env vars and restart.
-- AI works locally but not on Pages → set `API_BASE` and `ALLOWED_ORIGIN`.
-- Scanned PDF "No readable text" → image-only PDFs need OCR (unsupported).
-- Sign-in popup fails → add your domain to Firebase Authorized domains.
-- Old versions stored a Groq key in the browser/Firestore; v3 deletes the local copy, but **rotate that key** in the Groq console.
+- Vanilla JavaScript, HTML, and CSS
+- Node.js 18+ API server and Vercel serverless API routes
+- Groq API for AI responses
+- Browser storage for local app data
+- PDF.js for extracting text from PDFs
+
+## Notes and limitations
+
+- AI features require internet access and a configured backend API key.
+- The app shell can be installed and used offline, but AI features require an active connection.
+- PDF files must contain selectable text. Scanned/image-only PDFs require OCR, which is not currently supported.
+- Google sign-in and cloud sync are not configured in the current release.
+
+## Push changes to GitHub
+
+From the project directory, stage and commit the README change, then push it to the existing `main` branch:
+
+```powershell
+git add README.md
+git commit -m "docs: update project README"
+git push origin main
+```
+
+To review what will be committed first:
+
+```powershell
+git status
+git diff -- README.md
+```
