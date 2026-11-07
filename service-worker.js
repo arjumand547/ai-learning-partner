@@ -1,6 +1,6 @@
 const CACHE = 'ai-partner-v3';
 const ASSETS = ['./', './index.html', './css/style.css', './manifest.json', './icons/icon-192.png', './icons/icon-512.png',
-  './js/config.js', './js/firebase-config.js', './js/store.js', './js/attendance.js', './js/ai.js', './js/docs.js', './js/ui.js', './js/auth.js', './js/app.js'];
+  './js/config.js', './js/firebase-config.js', './js/store.js', './js/attendance.js', './js/ai.js', './js/docs.js', './js/ui.js', './js/auth.js', './js/export.js', './js/app.js'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {

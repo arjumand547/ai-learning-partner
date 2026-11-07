@@ -1,3 +1,3 @@
 { "name": "ai-learning-partner", "version": "3.0.0", "private": true,
-  "scripts": { "start": "node server/server.js", "build:vercel": "node scripts/build-vercel.js", "test": "node tests/attendance.test.js && node tests/server.test.js && node tests/docs.test.js && node tests/vercel.test.js" },
+  "scripts": { "start": "node server/server.js", "build:vercel": "node scripts/build-vercel.js", "test": "node tests/attendance.test.js && node tests/server.test.js && node tests/docs.test.js && node tests/vercel.test.js && node tests/export.test.js" },
   "engines": { "node": ">=18" } }

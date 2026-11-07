@@ -27,6 +27,7 @@ Courses, timetable, attendance, scholarships, freelance and semester start sync.
 
 ## Features
 - **Tutor**: server-side prompt, loading/typing indicator, duplicate-submit guard, persisted history, clear chat, code blocks, quick study-plan/quiz/flashcard starters.
+- **Answer exports**: open the print dialog to save the last answer as PDF, or download a formatted Word-compatible RTF document.
 - **Courses**: add/rename/delete, duplicate-name check, progress slider, study-session log.
 - **Course AI Gem**: upload multiple PDF/TXT per course (PDF.js text extraction), paste notes, chunk + BM25-style keyword retrieval, top excerpts sent to the AI; answers split into "From your notes" vs "Beyond your notes". Summary/quiz/flashcards/study-plan buttons.
 - **Attendance**: timetable with overlap check; lectures generated from real timetable days since semester start; mark only started lectures; present/absent/leave kept separate; leave excluded from the denominator; unmarked past lectures listed separately (never silently counted); needed/can-miss calculation at 80%.

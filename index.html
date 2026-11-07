@@ -45,7 +45,7 @@
     <div class="chips"><button class="chip" data-act="quick" data-q="Explain this concept simply with an analogy: ">Explain a concept</button><button class="chip" data-act="quick" data-q="Make a 7-day study plan for: ">Study plan</button><button class="chip" data-act="quick" data-q="Quiz me with 5 questions (answers at the end) on: ">Quiz me</button><button class="chip" data-act="quick" data-q="Create 8 flashcards (Front / Back) on: ">Flashcards</button></div>
     <div id="chat-box" class="chat tall" aria-live="polite"></div>
     <div class="row"><input id="chat-input" class="input" data-enter="send-tutor" placeholder="Ask about AI, tools, deployment…" maxlength="2000" aria-label="Message"><button class="btn primary send-btn" data-act="send-tutor">Send</button></div>
-    <div class="row"><button class="btn sm" data-act="clear-chat">Clear chat</button><button class="btn sm" data-act="dl-notes">Download last answer</button></div>
+    <div class="row wrap"><button class="btn sm" data-act="clear-chat">Clear chat</button><button class="btn sm" data-act="notes-pdf">Print / Save answer as PDF</button><button class="btn sm" data-act="notes-word">Download answer for Word</button></div>
   </section>
 
   <section id="page-courses" class="page">
@@ -128,6 +128,7 @@
 <script src="js/docs.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/export.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

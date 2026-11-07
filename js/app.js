@@ -203,8 +203,10 @@ const Acts = {
   go: d => App.go(d.page),
   'send-tutor': sendTutor,
   'clear-chat': () => { if (confirm('Clear all tutor chat history?')) { App.chat = []; DB.set('chat_history', [], true); renderTutor(); } },
-  'dl-notes': () => { const m = [...App.chat].reverse().find(x => x.role === 'assistant'); if (!m) return toast('No AI answer to download yet');
-    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([m.content], { type: 'text/plain' })), download: 'AI_Notes_' + Att.ymd() + '.txt' }); a.click(); URL.revokeObjectURL(a.href); },
+  'notes-pdf': () => { const m = [...App.chat].reverse().find(x => x.role === 'assistant'); if (!m) return toast('No AI answer to export yet');
+    if (!NotesExport.printPdf(m.content, Att.ymd())) toast('Allow pop-ups to open the print / PDF view.'); },
+  'notes-word': () => { const m = [...App.chat].reverse().find(x => x.role === 'assistant'); if (!m) return toast('No AI answer to export yet');
+    NotesExport.downloadWord(m.content, Att.ymd()); },
   quick: d => { const i = $('#chat-input'); i.value = d.q; i.focus(); },
   'course-save': saveCourse,
   'course-edit': d => { const c = byId('courses', d.id); $('#course-name').value = c.name; $('#course-edit-id').value = c.id; $('#course-save').textContent = '💾 Update course'; $('#course-name').focus(); },

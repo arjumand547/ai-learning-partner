@@ -1,8 +1,33 @@
 // UI helpers: toast, safe markdown, navigation, 3D tilt, AI orb, particle background, reduced motion.
 function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 3000); }
-function md(t) { // escape first, then apply a tiny safe subset of markdown
-  return String(t).split('```').map((p, i) => i % 2 ? `<pre><code>${esc(p.slice(p.indexOf('\n') + 1))}</code></pre>`
-    : esc(p).replace(/`([^`\n]+)`/g, '<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/^#{1,4} (.*)$/gm, '<b>$1</b>').replace(/\n/g, '<br>')).join('');
+function md(t) {
+  const inline = s => esc(s).replace(/`([^`\n]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  return String(t).split('```').map((part, index) => {
+    if (index % 2) {
+      const code = part.replace(/^[^\n]*\n/, '');
+      return `<pre><code>${esc(code)}</code></pre>`;
+    }
+    const lines = part.split(/\r?\n/), out = [];
+    let paragraph = [], list = '', items = [];
+    const flushParagraph = () => { if (paragraph.length) out.push(`<p>${paragraph.map(inline).join('<br>')}</p>`); paragraph = []; };
+    const flushList = () => { if (items.length) out.push(`<${list}>${items.map(x => `<li>${inline(x)}</li>`).join('')}</${list}>`); list = ''; items = []; };
+    for (const line of lines) {
+      const heading = line.match(/^(#{1,4})\s+(.+)$/);
+      const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+      const ordered = line.match(/^\s*\d+[.)]\s+(.+)$/);
+      if (heading) { flushParagraph(); flushList(); const tag = heading[1].length < 3 ? 'h3' : 'h4'; out.push(`<${tag}>${inline(heading[2])}</${tag}>`); }
+      else if (bullet || ordered) {
+        flushParagraph();
+        const type = bullet ? 'ul' : 'ol';
+        if (list && list !== type) flushList();
+        list = type; items.push((bullet || ordered)[1]);
+      } else if (!line.trim()) { flushParagraph(); flushList(); }
+      else { flushList(); paragraph.push(line); }
+    }
+    flushParagraph(); flushList();
+    return out.join('');
+  }).join('');
 }
 const Motion = {
   reduced: () => document.documentElement.classList.contains('reduce'),
