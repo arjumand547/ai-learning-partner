@@ -1,0 +1,12 @@
+const assert = require('assert'); const store = {};
+global.DB = { get: (k, f) => store[k] ?? f, set: (k, v) => (store[k] = v, true), uid: () => Math.random() }; global.document = {}; global.window = {};
+global.eval(require('fs').readFileSync(__dirname + '/../js/docs.js', 'utf8').replace('const Docs', 'global.Docs'));
+Docs.addText(1, 'ml.txt', 'Gradient descent minimizes a loss function by stepping against the gradient.\n\n' + 'Filler paragraph about unrelated cooking recipes and pasta. '.repeat(30) + '\n\nBackpropagation computes gradients layer by layer using the chain rule.');
+Docs.addText(1, 'other.txt', 'The French Revolution began in 1789 and reshaped European politics for decades afterwards.');
+Docs.addText(2, 'x.txt', 'Course two only talks about databases and SQL joins in detail here.');
+assert(Docs.list(1).length === 2 && Docs.list(1)[0].chunks.length >= 2);
+assert(/gradient descent/i.test(Docs.retrieve(1, 'What is gradient descent?')[0].t));
+assert(/chain rule/.test(Docs.retrieve(1, 'how does backpropagation work')[0].t));
+assert.equal(Docs.retrieve(1, 'SQL joins').length, 0, 'no cross-course leakage / no match -> empty');
+assert.throws(() => Docs.addText(1, 'e', ' short '), /No readable text/);
+console.log('docs chunk/retrieval tests passed');
